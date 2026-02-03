@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallery - Shiori Manga Reader</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <div class="container">
+    <nav>
+      <a href="index.html" class="logo">Shiori</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="download.html">Download</a></li>
+        <li><a href="gallery.html">Gallery</a> </li>
+        <li><a href="https://github.com/Shiori-Reader/Shiori" target="_blank">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="gallery-section">
+  <div class="gallery-header">
+    <h1>Shiori Gallery</h1>
+    <p>Explore the Shiori manga reader interface. Click on any image to view it in full size.</p>
+  </div>
+
+  <div class="gallery-container">
+    <div class="gallery-grid">
+      <div class="gallery-card" data-index="0" data-title="Reader" data-description="The main interface of Shiori showing an open manga and the control panels">
+        <div class="gallery-card-image-wrapper">
+          <img src="assets/demo1.png" alt="Shiori Home Screen" class="gallery-card-image">
+        </div>
+        <div class="gallery-card-content">
+          <h3 class="gallery-card-title">Main Panel</h3>
+          <p class="gallery-card-description">The place where everything happens.</p>
+        </div>
+      </div>
+
+      <div class="gallery-card" data-index="1" data-title="Manga Statistics" data-description="The statistics panel showing ratings and follows.">
+        <div class="gallery-card-image-wrapper">
+          <img src="assets/demo2.png" alt="Shiori Reader" class="gallery-card-image">
+        </div>
+        <div class="gallery-card-content">
+          <h3 class="gallery-card-title">Manga Statistics</h3>
+          <p class="gallery-card-description">Display the statistics of the manga you are reading, directly from MangaDex!</p>
+        </div>
+      </div>
+
+      <div class="gallery-card" data-index="2" data-title="Bookmarks" data-description="An absolute must-have for any manga reader. And an absolute pain to implement.">
+        <div class="gallery-card-image-wrapper">
+          <img src="assets/demo3.png" alt="Shiori Settings" class="gallery-card-image">
+        </div>
+        <div class="gallery-card-content">
+          <h3 class="gallery-card-title">Bookmarks</h3>
+          <p class="gallery-card-description">An absolute must-have for any manga reader. And an absolute pain to implement.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="gallery-nav">
+      <span class="gallery-nav-dot active" data-index="0"></span>
+      <span class="gallery-nav-dot" data-index="1"></span>
+      <span class="gallery-nav-dot" data-index="2"></span>
+    </div>
+  </div>
+</section>
+
+<!-- Lightbox Modal -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightbox-close">&times;</button>
+  <button class="lightbox-nav lightbox-prev" id="lightbox-prev">&#10094;</button>
+  <img src="" alt="Gallery Image" class="lightbox-content" id="lightbox-content">
+  <button class="lightbox-nav lightbox-next" id="lightbox-next">&#10095;</button>
+  <div class="lightbox-caption" id="lightbox-caption"></div>
+</div>
+
+<footer>
+  <div class="container">
+    <p>Shiori is an open-source project. View the source on <a href="https://github.com/meowcat767/Shiori" target="_blank">GitHub</a>.</p>
+    <p style="margin-top: 10px; font-size: 0.9rem;">Shiori - Manga Reader for MangaDex</p>
+  </div>
+</footer>
+
+<script>
+  // Gallery Data
+  const galleryItems = [
+    {
+      src: 'assets/demo1.png',
+      title: 'Home Screen',
+      description: 'The main interface of Shiori showing your library and recent reads'
+    },
+    {
+      src: 'assets/demo2.png',
+      title: 'Manga Reader',
+      description: 'The immersive manga reading experience with customizable settings'
+    },
+    {
+      src: 'assets/demo3.png',
+      title: 'Settings Panel',
+      description: 'Customize your reading experience with various options'
+    }
+  ];
+
+  // DOM Elements
+  const galleryCards = document.querySelectorAll('.gallery-card');
+  const lightbox = document.getElementById('lightbox');
+  const lightboxContent = document.getElementById('lightbox-content');
+  const lightboxCaption = document.getElementById('lightbox-caption');
+  const lightboxClose = document.getElementById('lightbox-close');
+  const lightboxPrev = document.getElementById('lightbox-prev');
+  const lightboxNext = document.getElementById('lightbox-next');
+  const navDots = document.querySelectorAll('.gallery-nav-dot');
+
+  let currentIndex = 0;
+
+  // Open Lightbox
+  function openLightbox(index) {
+    currentIndex = index;
+    updateLightboxContent();
+    lightbox.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  // Close Lightbox
+  function closeLightbox() {
+    lightbox.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  // Update Lightbox Content
+  function updateLightboxContent() {
+    const item = galleryItems[currentIndex];
+    lightboxContent.src = item.src;
+    lightboxContent.alt = item.title;
+    lightboxCaption.textContent = item.title;
+
+    // Update nav dots
+    navDots.forEach((dot, index) => {
+      dot.classList.toggle('active', index === currentIndex);
+    });
+  }
+
+  // Navigate Lightbox
+  function navigateLightbox(direction) {
+    currentIndex = (currentIndex + direction + galleryItems.length) % galleryItems.length;
+    updateLightboxContent();
+  }
+
+  // Event Listeners - Gallery Cards
+  galleryCards.forEach((card, index) => {
+    card.addEventListener('click', () => openLightbox(index));
+  });
+
+  // Event Listeners - Navigation Dots
+  navDots.forEach((dot, index) => {
+    dot.addEventListener('click', () => openLightbox(index));
+  });
+
+  // Event Listeners - Lightbox Controls
+  lightboxClose.addEventListener('click', closeLightbox);
+  lightboxPrev.addEventListener('click', () => navigateLightbox(-1));
+  lightboxNext.addEventListener('click', () => navigateLightbox(1));
+
+  // Close lightbox when clicking outside content
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) {
+      closeLightbox();
+    }
+  });
+
+  // Keyboard Navigation
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('active')) return;
+
+    switch(e.key) {
+      case 'Escape':
+        closeLightbox();
+        break;
+      case 'ArrowLeft':
+        navigateLightbox(-1);
+        break;
+      case 'ArrowRight':
+        navigateLightbox(1);
+        break;
+    }
+  });
+
+  // Touch Swipe Support for Mobile
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  lightbox.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  lightbox.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+  }, { passive: true });
+
+  function handleSwipe() {
+    const swipeThreshold = 50;
+    const diff = touchStartX - touchEndX;
+
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        navigateLightbox(1); // Swipe left - next
+      } else {
+        navigateLightbox(-1); // Swipe right - previous
+      }
+    }
+  }
+</script>
+</body>
+</html>
+
